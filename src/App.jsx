@@ -126,14 +126,12 @@ const App = () => {
   )
 
   const logoutForm = () => (
-    <form onSubmit={handleLogout}>
-      <button type="submit">logout</button>
-    </form>
+      <button onClick={handleLogout}>logout</button>
   )
 
   const blogList = () => (
     blogs.map(blog => (
-      <Blog key={blog.id} blog={blog} />
+      <Blog key={blog.id} blog={blog} user={user}/>
     ))
   )
 
