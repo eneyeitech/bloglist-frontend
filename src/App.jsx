@@ -2,6 +2,9 @@ import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import NotificationSuccess from "./components/NotificationSuccess";
+import NotificationFailure from "./components/NotificationFailure";
+
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
@@ -10,6 +13,24 @@ const App = () => {
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
   const [user, setUser] = useState(null)
+  const [successMessage, setSuccessMessage] = useState(null);
+  const [failureMessage, setFailureMessage] = useState(null);
+
+ // Helper function to display failure messages
+  const displayFailureMessage = (message) => {
+    setFailureMessage(message);
+    setTimeout(() => {
+      setFailureMessage(null);
+    }, 5000);
+  };
+
+  // Helper function to display success messages
+  const displaySuccessMessage = (message) => {
+    setSuccessMessage(message);
+    setTimeout(() => {
+      setSuccessMessage(null);
+    }, 5000);
+  };
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -19,7 +40,7 @@ const App = () => {
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
-    if(loggedUserJSON){
+    if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
       setUser(user)
       blogService.setToken(user.token)
@@ -40,6 +61,10 @@ const App = () => {
       setTitle('')
       setAuthor('')
       setUrl('')
+
+      displaySuccessMessage(
+        `Blog '${returnedBlog.title}' was added`
+      )
     })
   }
 
@@ -51,12 +76,14 @@ const App = () => {
       window.localStorage.setItem(
         'loggedBlogappUser', JSON.stringify(user)
       )
-      
+
       setUser(user)
       setUsername('')
       setPassword('')
     } catch {
-
+      setUsername('')
+      setPassword('')
+      displayFailureMessage('Wrong credentials')
     }
   }
 
@@ -64,11 +91,11 @@ const App = () => {
     event.preventDefault()
 
     try {
-      
+
       window.localStorage.removeItem(
         'loggedBlogappUser'
       )
-      
+      displaySuccessMessage(`User ${user.username} logged out`)
       setUser(null)
     } catch {
 
@@ -157,14 +184,18 @@ const App = () => {
       {!user && (
         <>
           <h2>Log in to application</h2>
+          <NotificationSuccess message={successMessage} />
+          <NotificationFailure message={failureMessage} />
           {loginForm()}
         </>
       )}
 
       {user && (
         <div>
-          
+
           <h2>blogs</h2>
+          <NotificationSuccess message={successMessage} />
+          <NotificationFailure message={failureMessage} />
           <p>{user.name} logged in {logoutForm()}</p>
           {blogForm()}
           {blogList()}
