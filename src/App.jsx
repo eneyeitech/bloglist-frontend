@@ -120,18 +120,21 @@ const App = () => {
   )
 
   const blogForm = () => (
-   <Togglable buttonLabel="create new blog" ref={blogFormRef}>
-      <BlogForm createBlog={addBlog}/>
-   </Togglable>
+    <Togglable buttonLabel="create new blog" ref={blogFormRef}>
+      <BlogForm createBlog={addBlog} />
+    </Togglable>
   )
 
   const logoutForm = () => (
-      <button onClick={handleLogout}>logout</button>
+    <button onClick={handleLogout}>logout</button>
   )
 
   const blogList = () => (
-    blogs.map(blog => (
-      <Blog key={blog.id} blog={blog} user={user} setBlogs={setBlogs} blogs={blogs}/>
+    blogs
+    .slice() // create a shallow copy so you don't mutate state directly
+    .sort((a, b) => b.likes - a.likes) // sort descending by likes
+    .map(blog => (
+      <Blog key={blog.id} blog={blog} user={user} setBlogs={setBlogs} blogs={blogs} />
     ))
   )
 
