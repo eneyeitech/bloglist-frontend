@@ -15,7 +15,7 @@ const Blog = ({ blog, user, setBlogs, blogs }) => {
     borderWidth: 1,
     marginBottom: 5
   }
-  console.log(user)
+
   const likeBlog = async (blog) => {
     const updatedBlog = {
       ...blog,
@@ -26,6 +26,26 @@ const Blog = ({ blog, user, setBlogs, blogs }) => {
     const returnedBlog = await blogService.update(blog.id, updatedBlog)
     setBlogs(blogs.map(b => b.id !== blog.id ? b : returnedBlog))
   }
+
+  /*const deleteBlog = async (blog) => {
+    console.log('deleting', blog)
+    const response = await blogService.remove(blog.id)
+    setBlogs(blogs.filter(b => b.id !== blog.id))
+  }*/
+
+  const deleteBlog = async (blog) => {
+    const ok = window.confirm(`Remove blog "${blog.title}" by ${blog.author}?`)
+    if (!ok) return
+
+    try {
+      await blogService.remove(blog.id)
+      setBlogs(blogs.filter(b => b.id !== blog.id))
+    } catch (err) {
+      console.error('Error deleting blog:', err)
+      alert('Failed to delete blog')
+    }
+  }
+
 
 
 
@@ -38,7 +58,11 @@ const Blog = ({ blog, user, setBlogs, blogs }) => {
         <>
           <p>{blog.url}</p>
           <p>likes {blog.likes} <button onClick={() => likeBlog(blog)}>like</button></p>
-          <p>{user.name}</p>
+          <p>{blog.user?.username || 'not added by user'}</p>
+
+          {blog.user?.username === user.username && (
+            <button onClick={() => deleteBlog(blog)}>remove</button>
+          )}
         </>
       )}
     </div>
