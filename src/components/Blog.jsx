@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useState } from 'react'
 import blogService from '../services/blogs'
 
 const Blog = ({ blog, user, setBlogs, blogs }) => {
-  const [showDetails, setShowDetails] = useState(false);
+  const [showDetails, setShowDetails] = useState(false)
 
   const toggleShowDetails = () => {
     setShowDetails(!showDetails)

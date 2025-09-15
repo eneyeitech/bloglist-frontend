@@ -2,35 +2,35 @@ import { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
-import NotificationSuccess from "./components/NotificationSuccess";
-import NotificationFailure from "./components/NotificationFailure";
-import Togglable from './components/Togglable';
-import BlogForm from './components/BlogForm';
+import NotificationSuccess from './components/NotificationSuccess'
+import NotificationFailure from './components/NotificationFailure'
+import Togglable from './components/Togglable'
+import BlogForm from './components/BlogForm'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [successMessage, setSuccessMessage] = useState(null);
-  const [failureMessage, setFailureMessage] = useState(null);
+  const [successMessage, setSuccessMessage] = useState(null)
+  const [failureMessage, setFailureMessage] = useState(null)
   const blogFormRef = useRef()
 
   // Helper function to display failure messages
   const displayFailureMessage = (message) => {
-    setFailureMessage(message);
+    setFailureMessage(message)
     setTimeout(() => {
-      setFailureMessage(null);
-    }, 5000);
-  };
+      setFailureMessage(null)
+    }, 5000)
+  }
 
   // Helper function to display success messages
   const displaySuccessMessage = (message) => {
-    setSuccessMessage(message);
+    setSuccessMessage(message)
     setTimeout(() => {
-      setSuccessMessage(null);
-    }, 5000);
-  };
+      setSuccessMessage(null)
+    }, 5000)
+  }
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -89,7 +89,7 @@ const App = () => {
       displaySuccessMessage(`User ${user.username} logged out`)
       setUser(null)
     } catch {
-
+      displayFailureMessage('Error occured')
     }
   }
 
@@ -131,11 +131,11 @@ const App = () => {
 
   const blogList = () => (
     blogs
-    .slice() // create a shallow copy so you don't mutate state directly
-    .sort((a, b) => b.likes - a.likes) // sort descending by likes
-    .map(blog => (
-      <Blog key={blog.id} blog={blog} user={user} setBlogs={setBlogs} blogs={blogs} />
-    ))
+      .slice() // create a shallow copy so you don't mutate state directly
+      .sort((a, b) => b.likes - a.likes) // sort descending by likes
+      .map(blog => (
+        <Blog key={blog.id} blog={blog} user={user} setBlogs={setBlogs} blogs={blogs} />
+      ))
   )
 
 
