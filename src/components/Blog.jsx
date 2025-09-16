@@ -50,20 +50,20 @@ const Blog = ({ blog, user, setBlogs, blogs }) => {
 
 
   return (
-    <div style={blogStyle}>
-      {blog.title} <i>{blog.author}</i>
+    <div style={blogStyle} className='blog'>
+      <span className='blog-title'>{blog.title}</span> <i>{blog.author}</i>
       <button onClick={toggleShowDetails}>{showDetails ? 'hide' : 'view'}</button>
       <br />
       {showDetails && (
-        <>
-          <p>{blog.url}</p>
-          <p>likes {blog.likes} <button onClick={() => likeBlog(blog)}>like</button></p>
+        <div className='blog-details'>
+          <p className='blog-url'>{blog.url}</p>
+          <p className='blog-likes'>likes {blog.likes} <button onClick={() => likeBlog(blog)}>like</button></p>
           <p>{blog.user?.username || 'not added by user'}</p>
 
           {blog.user?.username === user.username && (
             <button onClick={() => deleteBlog(blog)}>remove</button>
           )}
-        </>
+        </div>
       )}
     </div>
   )
