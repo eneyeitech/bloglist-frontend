@@ -39,6 +39,7 @@ describe('Blog app', () => {
     })
 
     describe('When logged in', () => {
+
         beforeEach(async ({ page }) => {
             await page.getByRole('textbox', { name: 'username' }).fill('mluukkai')
             await page.getByRole('textbox', { name: 'password' }).fill('salainen')
@@ -47,13 +48,42 @@ describe('Blog app', () => {
 
         test('a new blog can be created', async ({ page }) => {
             await page.getByRole('button', { name: 'create new blog' }).click()
-            await page.getByPlaceholder('enter title').fill('Test Blog Tester')
-            await page.getByPlaceholder('enter author').fill('Tester')
+            await page.getByPlaceholder('enter title').fill('test blog tester')
+            await page.getByPlaceholder('enter author').fill('tester')
             await page.getByPlaceholder('enter url').fill('http://example.com')
             await page.getByRole('button', { name: 'create' }).click()
 
-            await expect(page.locator('.blog')).toContainText('Test Blog Tester')
+            //await expect(page.locator('.blog')).toContainText('Test Blog Tester')
+            await expect(page.getByText('test blog tester tester')).toBeVisible()
             //await expect(page.getByText('Test Blog Tester')).toBeVisible()
+        })
+
+        /*test('a blog can be liked', async ({ page }) => {
+            await page.getByRole('button', { name: 'view' }).click()
+            await page.getByRole('button', { name: 'like' }).click()
+
+            await expect(page.getByText('likes 1')).toBeVisible()
+        })*/
+    })
+
+    describe('Like', () => {
+        beforeEach(async ({ page }) => {
+            await page.getByRole('textbox', { name: 'username' }).fill('mluukkai')
+            await page.getByRole('textbox', { name: 'password' }).fill('salainen')
+            await page.getByRole('button', { name: 'login' }).click()
+
+            await page.getByRole('button', { name: 'create new blog' }).click()
+            await page.getByPlaceholder('enter title').fill('test blog tester')
+            await page.getByPlaceholder('enter author').fill('tester')
+            await page.getByPlaceholder('enter url').fill('http://example.com')
+            await page.getByRole('button', { name: 'create' }).click()
+        })
+
+        test('a blog can be liked', async ({ page }) => {
+            await page.getByRole('button', { name: 'view' }).click()
+            await page.getByRole('button', { name: 'like' }).click()
+
+            await expect(page.getByText('likes 1')).toBeVisible()
         })
     })
 
