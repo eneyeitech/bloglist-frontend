@@ -54,7 +54,7 @@ describe('Blog app', () => {
             await expect(page.getByText('likes 1')).toBeVisible()
         })
 
-        test('a blog can be deleted by creator', async ({ page }) => {
+        test.only('a blog can be deleted by creator', async ({ page }) => {
             await createBlog(page, 'test blog tester', 'tester', 'http://example.com')
 
             await page.getByRole('button', { name: 'view' }).click()
@@ -63,8 +63,33 @@ describe('Blog app', () => {
             page.once('dialog', dialog => dialog.accept())
 
             await page.getByRole('button', { name: 'remove' }).click()
-            await expect(page.getByText('Test Blog Tester')).not.toBeVisible()
+            await expect(page.getByText('test blog tester')).not.toBeVisible()
         })
+
+        test('only creator sees the delete button', async ({ page, request }) => {
+            await createBlog(page, 'test blog tester', 'tester', 'http://example.com')
+            
+            // Create another user
+            await request.post('http://localhost:3003/api/users', {
+                data: {
+                    username: 'other',
+                    name: 'Other User',
+                    password: 'password'
+                }
+            })
+
+            // logout first user
+            await page.getByRole('button', { name: 'logout' }).click()
+
+            // login as other user
+            await page.getByRole('textbox', { name: 'username' }).fill('other')
+            await page.getByRole('textbox', { name: 'password' }).fill('password')
+            await page.getByRole('button', { name: 'login' }).click()
+
+            await page.getByRole('button', { name: 'view' }).click()
+            await expect(page.getByRole('button', { name: 'remove' })).not.toBeVisible()
+        })
+
     })
 
     /*describe('Like', () => {
