@@ -54,7 +54,7 @@ describe('Blog app', () => {
             await expect(page.getByText('likes 1')).toBeVisible()
         })
 
-        test.only('a blog can be deleted by creator', async ({ page }) => {
+        test('a blog can be deleted by creator', async ({ page }) => {
             await createBlog(page, 'test blog tester', 'tester', 'http://example.com')
 
             await page.getByRole('button', { name: 'view' }).click()
@@ -68,7 +68,7 @@ describe('Blog app', () => {
 
         test('only creator sees the delete button', async ({ page, request }) => {
             await createBlog(page, 'test blog tester', 'tester', 'http://example.com')
-            
+
             // Create another user
             await request.post('http://localhost:3003/api/users', {
                 data: {
@@ -89,6 +89,35 @@ describe('Blog app', () => {
             await page.getByRole('button', { name: 'view' }).click()
             await expect(page.getByRole('button', { name: 'remove' })).not.toBeVisible()
         })
+
+        test.only('blogs are ordered according to likes', async ({ page }) => {
+            // create blogs
+            const blogs = [
+                { title: 'First', author: 'A', url: 'a.com' },
+                { title: 'Second', author: 'B', url: 'b.com' },
+                { title: 'Third', author: 'C', url: 'c.com' }
+            ]
+
+            for (let blog of blogs) {
+                await createBlog(page, blog.title, blog.author, blog.url)
+            }
+
+            // like "Second" twice
+            await page.getByText('Second B').getByRole('button', { name: 'view' }).click()
+            await page.getByText('Second B').getByRole('button', { name: 'like' }).click()
+            await page.getByText('Second B').getByRole('button', { name: 'like' }).click()
+
+            // like "First" once
+            await page.getByText('First A').getByRole('button', { name: 'view' }).click()
+            await page.getByText('First A').getByRole('button', { name: 'like' }).click()
+
+            // Verify order
+            const blogElements = await page.locator('.blog').allTextContents()
+            expect(blogElements[0]).toContain('Second B')
+            expect(blogElements[1]).toContain('First A')
+            expect(blogElements[2]).toContain('Third C')
+        })
+
 
     })
 
