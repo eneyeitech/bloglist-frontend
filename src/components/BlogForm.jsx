@@ -10,13 +10,12 @@ const BlogForm = ({ createBlog }) => {
     createBlog({
       title: title,
       author: author,
-      url: url
+      url: url,
     })
     setTitle('')
     setAuthor('')
     setUrl('')
   }
-
 
   return (
     <div>
@@ -24,34 +23,34 @@ const BlogForm = ({ createBlog }) => {
       <form onSubmit={addBlog}>
         <div>
           <label>
-                        title
+            title
             <input
               type="text"
               value={title}
               onChange={({ target }) => setTitle(target.value)}
-              placeholder='enter title'
+              placeholder="enter title"
             />
           </label>
         </div>
         <div>
           <label>
-                        author
+            author
             <input
               type="text"
               value={author}
               onChange={({ target }) => setAuthor(target.value)}
-              placeholder='enter author'
+              placeholder="enter author"
             />
           </label>
         </div>
         <div>
           <label>
-                        url
+            url
             <input
               type="text"
               value={url}
               onChange={({ target }) => setUrl(target.value)}
-              placeholder='enter url'
+              placeholder="enter url"
             />
           </label>
         </div>
@@ -59,7 +58,6 @@ const BlogForm = ({ createBlog }) => {
       </form>
     </div>
   )
-
 }
 
 export default BlogForm

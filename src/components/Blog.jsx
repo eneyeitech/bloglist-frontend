@@ -13,18 +13,18 @@ const Blog = ({ blog, user, setBlogs, blogs }) => {
     paddingLeft: 2,
     border: 'solid',
     borderWidth: 1,
-    marginBottom: 5
+    marginBottom: 5,
   }
 
   const likeBlog = async (blog) => {
     const updatedBlog = {
       ...blog,
       likes: blog.likes + 1,
-      user: user.id // send just the ID
+      user: user.id, // send just the ID
     }
 
     const returnedBlog = await blogService.update(blog.id, updatedBlog)
-    setBlogs(blogs.map(b => b.id !== blog.id ? b : returnedBlog))
+    setBlogs(blogs.map((b) => (b.id !== blog.id ? b : returnedBlog)))
   }
 
   /*const deleteBlog = async (blog) => {
@@ -39,25 +39,27 @@ const Blog = ({ blog, user, setBlogs, blogs }) => {
 
     try {
       await blogService.remove(blog.id)
-      setBlogs(blogs.filter(b => b.id !== blog.id))
+      setBlogs(blogs.filter((b) => b.id !== blog.id))
     } catch (err) {
       console.error('Error deleting blog:', err)
       alert('Failed to delete blog')
     }
   }
 
-
-
-
   return (
-    <div style={blogStyle} className='blog'>
-      <span className='blog-title'>{blog.title}</span> <i>{blog.author}</i>
-      <button onClick={toggleShowDetails}>{showDetails ? 'hide' : 'view'}</button>
+    <div style={blogStyle} className="blog">
+      <span className="blog-title">{blog.title}</span> <i>{blog.author}</i>
+      <button onClick={toggleShowDetails}>
+        {showDetails ? 'hide' : 'view'}
+      </button>
       <br />
       {showDetails && (
-        <div className='blog-details'>
-          <p className='blog-url'>{blog.url}</p>
-          <p className='blog-likes'>likes {blog.likes} <button onClick={() => likeBlog(blog)}>like</button></p>
+        <div className="blog-details">
+          <p className="blog-url">{blog.url}</p>
+          <p className="blog-likes">
+            likes {blog.likes}{' '}
+            <button onClick={() => likeBlog(blog)}>like</button>
+          </p>
           <p>{blog.user?.username || 'not added by user'}</p>
 
           {blog.user?.username === user.username && (

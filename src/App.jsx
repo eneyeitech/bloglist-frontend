@@ -33,9 +33,7 @@ const App = () => {
   }
 
   useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs(blogs)
-    )
+    blogService.getAll().then((blogs) => setBlogs(blogs))
   }, [])
 
   useEffect(() => {
@@ -49,24 +47,18 @@ const App = () => {
 
   const addBlog = (blogObject) => {
     blogFormRef.current.toggleVisibility()
-    blogService
-      .create(blogObject)
-      .then(returnedBlog => {
-        setBlogs(blogs.concat(returnedBlog))
-        displaySuccessMessage(
-          `Blog '${returnedBlog.title}' was added`
-        )
-      })
+    blogService.create(blogObject).then((returnedBlog) => {
+      setBlogs(blogs.concat(returnedBlog))
+      displaySuccessMessage(`Blog '${returnedBlog.title}' was added`)
+    })
   }
 
-  const handleLogin = async event => {
+  const handleLogin = async (event) => {
     event.preventDefault()
 
     try {
       const user = await loginService.login({ username, password })
-      window.localStorage.setItem(
-        'loggedBlogappUser', JSON.stringify(user)
-      )
+      window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user))
       blogService.setToken(user.token)
       setUser(user)
       setUsername('')
@@ -78,14 +70,11 @@ const App = () => {
     }
   }
 
-  const handleLogout = async event => {
+  const handleLogout = async (event) => {
     event.preventDefault()
 
     try {
-
-      window.localStorage.removeItem(
-        'loggedBlogappUser'
-      )
+      window.localStorage.removeItem('loggedBlogappUser')
       displaySuccessMessage(`User ${user.username} logged out`)
       setUser(null)
     } catch {
@@ -125,24 +114,24 @@ const App = () => {
     </Togglable>
   )
 
-  const logoutForm = () => (
-    <button onClick={handleLogout}>logout</button>
-  )
+  const logoutForm = () => <button onClick={handleLogout}>logout</button>
 
-  const blogList = () => (
+  const blogList = () =>
     blogs
       .slice() // create a shallow copy so you don't mutate state directly
       .sort((a, b) => b.likes - a.likes) // sort descending by likes
-      .map(blog => (
-        <Blog key={blog.id} blog={blog} user={user} setBlogs={setBlogs} blogs={blogs} />
+      .map((blog) => (
+        <Blog
+          key={blog.id}
+          blog={blog}
+          user={user}
+          setBlogs={setBlogs}
+          blogs={blogs}
+        />
       ))
-  )
-
 
   return (
     <div>
-
-
       {!user && (
         <>
           <h2>Log in to application</h2>
@@ -154,16 +143,16 @@ const App = () => {
 
       {user && (
         <div>
-
           <h2>blogs</h2>
           <NotificationSuccess message={successMessage} />
           <NotificationFailure message={failureMessage} />
-          <p>{user.name} logged in {logoutForm()}</p>
+          <p>
+            {user.name} logged in {logoutForm()}
+          </p>
           {blogForm()}
           {blogList()}
         </div>
       )}
-
     </div>
   )
 }
