@@ -1,11 +1,14 @@
-import React from 'react'
+//import  React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { likeBlog } from '../reducers/blogReducer'
+import { addComment } from '../reducers/blogReducer'
 
 const BlogView = () => {
   const { id } = useParams()
   const dispatch = useDispatch()
+  const [comment, setComment] = useState('')
 
   const blog = useSelector(state =>
     state.blogs.find(b => b.id === id)
@@ -18,6 +21,13 @@ const BlogView = () => {
 
   const handleLike = () => {
     dispatch(likeBlog(blog))
+  }
+
+   const handleSubmit = (e) => {
+    e.preventDefault()
+    if (comment.trim() === '') return
+    dispatch(addComment(blog.id, comment))
+    setComment('')
   }
 
   return (
@@ -36,7 +46,14 @@ const BlogView = () => {
       </p>
 
       <p>added by {blog.user?.name || 'unknown'}</p>
-
+      <form onSubmit={handleSubmit}>
+        <input
+          value={comment}
+          onChange={(e) => setComment(e.target.value)}
+          placeholder="Write a comment"
+        />
+        <button type="submit">add comment</button>
+      </form>
       {blog.comments && blog.comments.length > 0 && (
         <>
           <h3>Comments</h3>
