@@ -12,6 +12,9 @@ import { initializeBlogs, createBlog } from './reducers/blogReducer'
 import { showNotification } from './reducers/notificationReducer'
 import { loadUserFromStorage } from './reducers/userReducer'
 
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
+import Users from './components/Users'
+
 const App = () => {
   const blogs = useSelector((state) => state.blogs)
   const user = useSelector((state) => state.user)
@@ -32,7 +35,7 @@ const App = () => {
   }
 
   return (
-    <div>
+    <Router>
       {!user ? (
         <>
           <h2>Log in to application</h2>
@@ -41,23 +44,40 @@ const App = () => {
         </>
       ) : (
         <div>
-          <h2>blogs</h2>
+          <h2>Blog App</h2>
           <Notification />
+
           <p>
             {user.name} logged in <LogoutButton />
           </p>
-          <Togglable buttonLabel="create new blog" ref={blogFormRef}>
-            <BlogForm createBlog={addBlog} />
-          </Togglable>
-          {blogs
-            .slice()
-            .sort((a, b) => b.likes - a.likes)
-            .map((blog) => (
-              <Blog key={blog.id} blog={blog} user={user} />
-            ))}
+
+          {/* Navigation bar */}
+          <nav style={{ marginBottom: '1rem' }}>
+            <Link to="/">blogs</Link> | <Link to="/users">users</Link>
+          </nav>
+
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <>
+                  <Togglable buttonLabel="create new blog" ref={blogFormRef}>
+                    <BlogForm createBlog={addBlog} />
+                  </Togglable>
+                  {blogs
+                    .slice()
+                    .sort((a, b) => b.likes - a.likes)
+                    .map((blog) => (
+                      <Blog key={blog.id} blog={blog} user={user} />
+                    ))}
+                </>
+              }
+            />
+            <Route path="/users" element={<Users />} />
+          </Routes>
         </div>
       )}
-    </div>
+    </Router>
   )
 }
 
