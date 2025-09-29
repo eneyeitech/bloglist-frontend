@@ -1,14 +1,12 @@
 import React from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, Link } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 
 const User = () => {
   const { id } = useParams()
 
   // Get the list of users from the store
-  const user = useSelector(state =>
-    state.users.find(u => u.id === id)
-  )
+  const user = useSelector((state) => state.users.find((u) => u.id === id))
 
   // ✅ Conditional rendering: avoid "Cannot read property ..." errors
   if (!user) {
@@ -25,8 +23,10 @@ const User = () => {
         <>
           <h3>Added blogs</h3>
           <ul>
-            {user.blogs.map(blog => (
-              <li key={blog.id}>{blog.title}</li>
+            {user.blogs.map((blog) => (
+              <Link to={`/blogs/${blog.id}`}>
+                {blog.title} — {blog.author}
+              </Link>
             ))}
           </ul>
         </>

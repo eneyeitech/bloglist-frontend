@@ -6,15 +6,17 @@ import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import BlogForm from './components/BlogForm'
 import LoginForm from './components/LoginForm'
-import LogoutButton from './components/LogoutButton'
+import Navigation from './components/Navigation'
 
 import { initializeBlogs, createBlog } from './reducers/blogReducer'
 import { showNotification } from './reducers/notificationReducer'
 import { loadUserFromStorage } from './reducers/userReducer'
+import { initializeUsers } from './reducers/usersReducer'
 
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
 import Users from './components/Users'
 import User from './components/User'
+import BlogView from './components/BlogView'
 
 const App = () => {
   const blogs = useSelector((state) => state.blogs)
@@ -24,11 +26,11 @@ const App = () => {
   const blogFormRef = useRef()
 
   // initialize blogs and user
-  useEffect(() => {
-    dispatch(initializeBlogs())
-    dispatch(loadUserFromStorage())
-  }, [dispatch])
-  
+ useEffect(() => {
+  dispatch(initializeBlogs())
+  dispatch(initializeUsers())   // <-- add this
+  dispatch(loadUserFromStorage())
+}, [dispatch])
 
   const addBlog = (blogObject) => {
     blogFormRef.current.toggleVisibility()
@@ -49,16 +51,10 @@ const App = () => {
           <h2>Blog App</h2>
           <Notification />
 
-          <p>
-            {user.name} logged in <LogoutButton />
-          </p>
-
-          {/* Navigation bar */}
-          <nav style={{ marginBottom: '1rem' }}>
-            <Link to="/">blogs</Link> | <Link to="/users">users</Link>
-          </nav>
+          <Navigation user={user} />
 
           <Routes>
+            <Route path="/blogs/:id" element={<BlogView />} />
             <Route path="/users/:id" element={<User />} />
             <Route
               path="/"
