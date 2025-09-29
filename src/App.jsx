@@ -14,6 +14,7 @@ import { loadUserFromStorage } from './reducers/userReducer'
 
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
 import Users from './components/Users'
+import User from './components/User'
 
 const App = () => {
   const blogs = useSelector((state) => state.blogs)
@@ -27,6 +28,7 @@ const App = () => {
     dispatch(initializeBlogs())
     dispatch(loadUserFromStorage())
   }, [dispatch])
+  
 
   const addBlog = (blogObject) => {
     blogFormRef.current.toggleVisibility()
@@ -57,6 +59,7 @@ const App = () => {
           </nav>
 
           <Routes>
+            <Route path="/users/:id" element={<User />} />
             <Route
               path="/"
               element={
